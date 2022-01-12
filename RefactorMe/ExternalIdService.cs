@@ -44,36 +44,56 @@ namespace Opsi.Cloud.Core
             {
                 var sb = new StringBuilder();
 
-                foreach (var section in split)
+                switch (typeMetadata.Name)
                 {
-                    if (section.StartsWith('{'))
-                    {
-                        var args = Regex.Split(section, @":|{|}").Where(s => s != string.Empty).ToArray();
-                        switch (args[0])
+                    case EntityTypes.Site:
                         {
-                            case "date":
-                                sb.Append(GetDate(args[1]));
-                                break;
-
-                            case "increment":
-                                sb.Append(GetIncrement(args[1]));
-                                break;
-
-                            case "entity":
-                                sb.Append(GetEntity(args[1], entity));
-                                break;
-
-                            default:
-                                break;
+                            // 
+                            // 
+                            // ST-{entity:location.address.postalOrZipCode}-{increment:site} // ST-0042-01
+                            entity["externalId"] = $"ST-" +
+                                $"{GetEntity("location.address.postalOrZipCode", entity)}-" +
+                                $"{GetIncrement(EntityTypes.Site.ToLower())}";
+                            break;
                         }
-                    }
-                    else
-                    {
-                        sb.Append(section);
-                    }
+                    default:
+                        break;
                 }
 
-                entity["externalId"] = sb.ToString();
+                //temp hack to not handle Site
+                if (typeMetadata.Name != EntityTypes.Site)
+                {
+                    foreach (var section in split)
+                    {
+                        if (section.StartsWith('{'))
+                        {
+                            var args = Regex.Split(section, @":|{|}").Where(s => s != string.Empty).ToArray();
+                            switch (args[0])
+                            {
+                                case "date":
+                                    sb.Append(GetDate(args[1]));
+                                    break;
+
+                                case "increment":
+                                    sb.Append(GetIncrement(args[1]));
+                                    break;
+
+                                case "entity":
+                                    sb.Append(GetEntity(args[1], entity));
+                                    break;
+
+                                default:
+                                    break;
+                            }
+                        }
+                        else
+                        {
+                            sb.Append(section);
+                        }
+                    }
+
+                    entity["externalId"] = sb.ToString();
+                }
             }
 
             return result;
