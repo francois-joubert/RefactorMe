@@ -133,5 +133,33 @@ namespace RefactorMe.Test
 
             Assert.IsTrue(externalId.StartsWith($"ST-0042-"));
         }
+
+        [TestMethod]
+        public async Task GivenGenerate_WhenMultipleEntitiers_ShouldProccessAll()
+        {
+            var entity = new Dictionary<string, object>() {
+                { "id", 1 },
+                {   "location", new Dictionary<string, object> {
+                        {"address", new Dictionary<string, object> { { "postalOrZipCode", "0042" } } }
+                    }
+                }
+            };
+            var entity2 = new Dictionary<string, object>() {
+                { "id", 1 },
+                {   "location", new Dictionary<string, object> {
+                        {"address", new Dictionary<string, object> { { "postalOrZipCode", "MyValue" } } }
+                    }
+                }
+            };
+
+            await _classUnderTest.GenerateAsync(
+                new List<Dictionary<string, object>> { entity, entity2 },
+                new TypeMetadata { Name = EntityTypes.Site });
+            string externalId = (string)entity["externalId"];
+            string externalEntity2Id = (string)entity2["externalId"];
+
+            Assert.IsTrue(externalId.StartsWith($"ST-0042-"));
+            Assert.IsTrue(externalEntity2Id.StartsWith($"ST-MyValue-"));
+        }
     }
 }
