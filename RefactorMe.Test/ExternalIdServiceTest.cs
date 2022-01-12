@@ -18,6 +18,17 @@ namespace RefactorMe.Test
             _classUnderTest = new ExternalIdService(null);
         }
 
-        
+        [TestMethod]
+        public async Task GivenGenerate_WhenTypeMetadataIsSite_ShouldStartWithSiteNamingPattern()
+        {
+            var entity = new Dictionary<string, object>();
+
+            await _classUnderTest.GenerateAsync(
+                new List<Dictionary<string, object>> { entity },
+                new TypeMetadata { Name = "Site" });
+
+            string result = (string)entity["externalId"];
+            Assert.IsTrue(result.StartsWith("ST"));
+        }
     }
 }
