@@ -31,16 +31,6 @@ namespace Opsi.Cloud.Core
         {
             var result = new ServiceActionResult();
 
-            NamingPattern = GetNamingPattern(typeMetadata.Name);
-
-            if (NamingPattern == string.Empty
-                && TempExclusionHack(typeMetadata))
-            {
-                return result;
-            }
-
-            var split = Regex.Split(NamingPattern, regExMatch).Where(s => s != string.Empty).ToArray();
-
             foreach (var entity in entities)
             {
                 switch (typeMetadata.Name)
@@ -63,45 +53,9 @@ namespace Opsi.Cloud.Core
                     default:
                         break;
                 }
-
-                var sb = new StringBuilder();
-
-
-                if (TempExclusionHack(typeMetadata))
-                {
-                    foreach (var section in split)
-                    {
-                        if (section.StartsWith('{'))
-                        {
-                            var args = Regex.Split(section, @":|{|}").Where(s => s != string.Empty).ToArray();
-                            switch (args[0])
-                            {
-                                case "increment":
-                                    sb.Append(GetIncrement(args[1]));
-                                    break;
-                            }
-                        }
-                        else
-                        {
-                            sb.Append(section);
-                        }
-                    }
-
-                    entity["externalId"] = sb.ToString();
-                }
             }
 
             return result;
-        }
-
-        
-
-        private static bool TempExclusionHack(TypeMetadata typeMetadata)
-        {
-            return typeMetadata.Name != EntityTypes.Site 
-                && typeMetadata.Name != EntityTypes.Order
-                && typeMetadata.Name != EntityTypes.Product
-                ;
         }
 
         #region private
@@ -128,23 +82,11 @@ namespace Opsi.Cloud.Core
                 $"{GetEntity("location.address.postalOrZipCode", entity)}-" +
                 $"{GetIncrement(EntityTypes.Site.ToLower())}";
         }
-        private string GetNamingPattern(string name)
-        {
-            // Example Templates
-            switch (name)
-            {
-
-                default:
-                    return "";
-            }
-        }
 
         private string GetDate(string format)
         {
             return DateTime.Now.ToString(format);
         }
-
-
 
         private string GetIncrement(string type)
         {
