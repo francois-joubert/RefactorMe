@@ -111,7 +111,6 @@ namespace Opsi.Cloud.Core
             // Need to get this increment from Redis
             return new Random().Next(100)
                         .ToString();
-
         }
 
         private string GetEntity(string attribute, Dictionary<string, object> entity)

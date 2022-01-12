@@ -98,5 +98,21 @@ namespace RefactorMe.Test
             var date = DateTime.Now.ToString("ddMMyyyy");
             Assert.IsTrue(externalId.StartsWith($"ORD-{date}"));
         }
+
+        [TestMethod]
+        public async Task GivenGenerate_WhenIncrementNamingPattern_ShouldAppendIncrement()
+        {
+            var entity = new Dictionary<string, object>();
+
+            await _classUnderTest.GenerateAsync(
+                new List<Dictionary<string, object>> { entity },
+                new TypeMetadata { Name = EntityTypes.Order });
+            string externalId = (string)entity["externalId"];
+
+            var date = DateTime.Now.ToString("ddMMyyyy");
+            Assert.AreEqual(13, $"ORD-{date}-".Length);
+            // some random number was added
+            Assert.IsTrue(externalId.Length > 13);
+        }
     }
 }
