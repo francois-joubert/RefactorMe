@@ -116,27 +116,38 @@ namespace Opsi.Cloud.Core
 
     }
 
-    private string GetEntity(string attribute, object entity)
-    {
-      var splitPath = Regex.Split(attribute, @"\.")
-        .Where(s => s != String.Empty).ToArray();
-      var resultObject = entity;
-
-      foreach (var attr in splitPath)
-      {
-        try
+        private string GetEntity(string attribute, Dictionary<string, object> entity)
         {
-          resultObject = 
-            resultObject.GetType().GetProperty(attr).GetValue(resultObject, null);
+            var splitPath = Regex.Split(attribute, @"\.")
+              .Where(s => s != String.Empty).ToArray();
+            var resultObject = entity;
+            var result = "";
+
+            foreach (var attr in splitPath)
+            {
+                try
+                {
+                    if (resultObject.ContainsKey(attr))
+                    {
+                        var value = resultObject[attr];
+
+                        if (value != null && value is Dictionary<string, object>)
+                        {
+                            resultObject = (Dictionary<string, object>)value;
+                        }
+                        else
+                        {
+                            result = (string)value;
+                        }
+                    }
+                }
+                catch { }
+            }
+
+            return result;
         }
-        catch { }
-      }
 
-      return resultObject.ToString();
-
-    }
-
-    private string GetReference(string attribute, object entity)
+        private string GetReference(string attribute, object entity)
     {
       return entity.GetType().GetProperty(attribute).GetValue(entity, null).ToString();
     }
