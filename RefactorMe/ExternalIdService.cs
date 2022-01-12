@@ -12,110 +12,111 @@ using RefactorMe.Types;
 
 namespace Opsi.Cloud.Core
 {
-  public class ExternalIdService : IExternalIdGeneratorService
-  {
-    private readonly ILogger<ExternalIdService> _logger;
-
-    // Temporary Hard-Coded Configuration
-    private string NamingPattern = @"";
-
-    private readonly string regExMatch = @"({[a-z]*:[^:]*})";
-
-    public ExternalIdService(
-      ILogger<ExternalIdService> logger)
+    public class ExternalIdService : IExternalIdGeneratorService
     {
-      _logger = logger;
-    }
+        private readonly ILogger<ExternalIdService> _logger;
 
-    public async Task<ServiceActionResult> GenerateAsync(List<Dictionary<string, object>> entities, TypeMetadata typeMetadata)
-    {
-      var result = new ServiceActionResult();
+        // Temporary Hard-Coded Configuration
+        private string NamingPattern = @"";
 
-      NamingPattern = getNamingPattern(typeMetadata.Name);
+        private readonly string regExMatch = @"({[a-z]*:[^:]*})";
 
-      if (NamingPattern == string.Empty)
-      {
-        return result;
-      }
-
-      var split = Regex.Split(NamingPattern, regExMatch).Where(s => s != string.Empty).ToArray();
-
-      foreach (var entity in entities)
-      {
-        var sb = new StringBuilder();
-
-        foreach (var section in split)
+        public ExternalIdService(
+          ILogger<ExternalIdService> logger)
         {
-          if (section.StartsWith('{'))
-          {
-            var args = Regex.Split(section, @":|{|}").Where(s => s != string.Empty).ToArray();
-            switch (args[0])
-            {
-              case "date":
-                sb.Append(GetDate(args[1]));
-                break;
-
-              case "increment":
-                sb.Append(GetIncrement(args[1]));
-                break;
-
-              case "entity":
-                sb.Append(GetEntity(args[1], entity));
-                break;
-
-              case "reference":
-                sb.Append(GetReference(args[1], entity));
-                break;
-
-              default:
-                break;
-            }
-          }
-          else
-          {
-            sb.Append(section);
-          }
+            _logger = logger;
         }
 
-        entity["externalId"] = sb.ToString();
-      }
+        public async Task<ServiceActionResult> GenerateAsync(List<Dictionary<string, object>> entities, TypeMetadata typeMetadata)
+        {
+            var result = new ServiceActionResult();
 
-      return result;
-    }
+            NamingPattern = GetNamingPattern(typeMetadata.Name);
 
-    private string getNamingPattern(string name)
-    {
-      // Example Templates
-      switch (name)
-      {
-        case EntityTypes.Order:
-          return @"ORD-{date:ddMMyyyy}-{increment:order}"; // ORD-12122022-01
+            if (NamingPattern == string.Empty)
+            {
+                return result;
+            }
 
-        case EntityTypes.Site:
-          return @"ST-{entity:location.address.postalOrZipCode}-{increment:site}"; // ST-0042-01
+            var split = Regex.Split(NamingPattern, regExMatch).Where(s => s != string.Empty).ToArray();
 
-        case EntityTypes.Product:
-          return @"PRD-{increment:product}"; // PRD-01
+            foreach (var entity in entities)
+            {
+                var sb = new StringBuilder();
 
-        default:
-          return "";
-      }
-    }
+                foreach (var section in split)
+                {
+                    if (section.StartsWith('{'))
+                    {
+                        var args = Regex.Split(section, @":|{|}").Where(s => s != string.Empty).ToArray();
+                        switch (args[0])
+                        {
+                            case "date":
+                                sb.Append(GetDate(args[1]));
+                                break;
 
-    private string GetDate(string format)
-    {
-      return DateTime.Now.ToString(format);
-    }
+                            case "increment":
+                                sb.Append(GetIncrement(args[1]));
+                                break;
+
+                            case "entity":
+                                sb.Append(GetEntity(args[1], entity));
+                                break;
+
+                            case "reference":
+                                sb.Append(GetReference(args[1], entity));
+                                break;
+
+                            default:
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        sb.Append(section);
+                    }
+                }
+
+                entity["externalId"] = sb.ToString();
+            }
+
+            return result;
+        }
+
+        #region private
+        private string GetNamingPattern(string name)
+        {
+            // Example Templates
+            switch (name)
+            {
+                case EntityTypes.Order:
+                    return @"ORD-{date:ddMMyyyy}-{increment:order}"; // ORD-12122022-01
+
+                case EntityTypes.Site:
+                    return @"ST-{entity:location.address.postalOrZipCode}-{increment:site}"; // ST-0042-01
+
+                case EntityTypes.Product:
+                    return @"PRD-{increment:product}"; // PRD-01
+
+                default:
+                    return "";
+            }
+        }
+
+        private string GetDate(string format)
+        {
+            return DateTime.Now.ToString(format);
+        }
 
 
 
-    private string GetIncrement(string type)
-    {
-      // Need to get this increment from Redis
-      return new Random().Next(100)
-                  .ToString();
+        private string GetIncrement(string type)
+        {
+            // Need to get this increment from Redis
+            return new Random().Next(100)
+                        .ToString();
 
-    }
+        }
 
         private string GetEntity(string attribute, Dictionary<string, object> entity)
         {
@@ -149,10 +150,11 @@ namespace Opsi.Cloud.Core
         }
 
         private string GetReference(string attribute, object entity)
-    {
-      return entity.GetType().GetProperty(attribute).GetValue(entity, null).ToString();
+        {
+            return entity.GetType().GetProperty(attribute).GetValue(entity, null).ToString();
+        }
+        #endregion
     }
-  }
 
 }
 
