@@ -49,10 +49,12 @@ namespace Opsi.Cloud.Core
                 {
                     case EntityTypes.Site:
                         {
-                            // 
-                            // 
-                            // ST-{entity:location.address.postalOrZipCode}-{increment:site} // ST-0042-01
                             SetSiteExternalId(entity);
+                            break;
+                        }
+                    case EntityTypes.Order:
+                        {
+                            SetOrderExternalId(entity);
                             break;
                         }
                     default:
@@ -93,17 +95,27 @@ namespace Opsi.Cloud.Core
             return result;
         }
 
+        private void SetOrderExternalId(Dictionary<string, object> entity)
+        {
+            // ORD-{date:ddMMyyyy}-{increment:order}"; // ORD-12122022-01
+            entity["externalId"] = $"ORD-" +
+                $"{GetDate("ddMMyyyy")}-" +
+                $"{GetIncrement(EntityTypes.Order.ToLower())}";
+        }
+
         private static bool TempExclusionHack(TypeMetadata typeMetadata)
         {
-            return typeMetadata.Name != EntityTypes.Site;
+            return typeMetadata.Name != EntityTypes.Site && typeMetadata.Name != EntityTypes.Order;
         }
 
         #region private
         private void SetSiteExternalId(Dictionary<string, object> entity)
         {
+            // ST-{entity:location.address.postalOrZipCode}-{increment:site} // ST-0042-01
+
             entity["externalId"] = $"ST-" +
-                                            $"{GetEntity("location.address.postalOrZipCode", entity)}-" +
-                                            $"{GetIncrement(EntityTypes.Site.ToLower())}";
+                $"{GetEntity("location.address.postalOrZipCode", entity)}-" +
+                $"{GetIncrement(EntityTypes.Site.ToLower())}";
         }
         private string GetNamingPattern(string name)
         {
