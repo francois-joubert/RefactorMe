@@ -30,5 +30,18 @@ namespace RefactorMe.Test
             string result = (string)entity["externalId"];
             Assert.IsTrue(result.StartsWith("ST"));
         }
+
+        [TestMethod]
+        public async Task GivenGenerate_WhenTypeMetadataIsOrder_ShouldStartWithSiteNamingPattern()
+        {
+            var entity = new Dictionary<string, object>();
+
+            await _classUnderTest.GenerateAsync(
+                new List<Dictionary<string, object>> { entity },
+                new TypeMetadata { Name = "Order" });
+
+            string result = (string)entity["externalId"];
+            Assert.IsTrue(result.StartsWith("ORD"));
+        }
     }
 }
