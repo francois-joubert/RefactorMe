@@ -94,7 +94,7 @@ namespace Opsi.Cloud.Core
         case EntityTypes.Site:
           return @"ST-{entity:location.address.postalOrZipCode}-{increment:site}"; // ST-0042-01
 
-        case "Product":
+        case EntityTypes.Product:
           return @"PRD-{increment:product}"; // PRD-01
 
         default:
