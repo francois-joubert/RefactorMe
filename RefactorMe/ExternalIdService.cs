@@ -11,7 +11,7 @@ using Opsi.Cloud.Core.Model;
 
 namespace Opsi.Cloud.Core
 {
-  internal class ExternalIdService : IExternalIdGeneratorService
+  public class ExternalIdService : IExternalIdGeneratorService
   {
     private readonly ILogger<ExternalIdService> _logger;
 

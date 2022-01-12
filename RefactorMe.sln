@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31402.337
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RefactorMe", "RefactorMe\RefactorMe.csproj", "{C3A58508-067D-480B-9894-7A115506C8E6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{B2331ADE-519C-4244-BFDC-A5A6E153D1A8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RefactorMe.Test", "RefactorMe.Test\RefactorMe.Test.csproj", "{AEB630C8-BF9A-4745-A565-0C156411923A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{B2331ADE-519C-4244-BFDC-A5A6E153D1A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B2331ADE-519C-4244-BFDC-A5A6E153D1A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B2331ADE-519C-4244-BFDC-A5A6E153D1A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AEB630C8-BF9A-4745-A565-0C156411923A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AEB630C8-BF9A-4745-A565-0C156411923A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AEB630C8-BF9A-4745-A565-0C156411923A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AEB630C8-BF9A-4745-A565-0C156411923A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
