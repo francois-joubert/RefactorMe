@@ -114,5 +114,24 @@ namespace RefactorMe.Test
             // some random number was added
             Assert.IsTrue(externalId.Length > 13);
         }
+
+        [TestMethod]
+        public async Task GivenGenerate_WhenSiteEntityTypeAndPropertyDrill_ShouldGetDfrilledDownValue()
+        {
+            var entity = new Dictionary<string, object>() { 
+                { "id", 1 },
+                {   "location", new Dictionary<string, object> {
+                        {"address", new Dictionary<string, object> { { "postalOrZipCode", "0042" } } }
+                    } 
+                }
+            };
+
+            await _classUnderTest.GenerateAsync(
+                new List<Dictionary<string, object>> { entity },
+                new TypeMetadata { Name = EntityTypes.Site });
+            string externalId = (string)entity["externalId"];
+
+            Assert.IsTrue(externalId.StartsWith($"ST-0042-"));
+        }
     }
 }
