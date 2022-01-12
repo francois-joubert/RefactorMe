@@ -116,7 +116,7 @@ namespace RefactorMe.Test
         }
 
         [TestMethod]
-        public async Task GivenGenerate_WhenSiteEntityTypeAndPropertyDrill_ShouldGetDfrilledDownValue()
+        public async Task GivenGenerate_WhenSiteEntityTypeSiteAndPropertyDrill_ShouldGetDfrilledDownValue()
         {
             var entity = new Dictionary<string, object>() { 
                 { "id", 1 },
@@ -135,7 +135,21 @@ namespace RefactorMe.Test
         }
 
         [TestMethod]
-        public async Task GivenGenerate_WhenMultipleEntitiers_ShouldProccessAll()
+        public async Task GivenGenerate_WhenSiteEntityTypeSiteAndPropertyDrillWithNoValue_ShouldSkipValueAding()
+        {
+            var entity = new Dictionary<string, object> { { "id", 2 } };
+
+            await _classUnderTest.GenerateAsync(
+                new List<Dictionary<string, object>> { entity },
+                new TypeMetadata { Name = EntityTypes.Site });
+            string externalId = (string)entity["externalId"];
+
+            var vauleSkiped = "--";
+            Assert.IsTrue(externalId.StartsWith($"ST{vauleSkiped}"));
+        }
+
+        [TestMethod]
+        public async Task GivenGenerate_WhenMultipleEntities_ShouldProccessAll()
         {
             var entity = new Dictionary<string, object>() {
                 { "id", 1 },
