@@ -53,13 +53,13 @@ namespace RefactorMe.Test
             await _classUnderTest.GenerateAsync(
                 new List<Dictionary<string, object>> { entity },
                 new TypeMetadata { Name = EntityTypes.Product });
-            string result = (string)entity["externalId"];
+            string externalId = (string)entity["externalId"];
 
-            Assert.IsTrue(result.StartsWith("PRD"));
+            Assert.IsTrue(externalId.StartsWith("PRD"));
         }
 
         [TestMethod]
-        public async Task GivenGenerate_WhenUnknownEntityType_ShouldNotGenerateextErnalId()
+        public async Task GivenGenerate_WhenUnknownEntityType_ShouldNotGenerateExternalId()
         {
             var entity = new Dictionary<string, object>();
 
@@ -68,6 +68,20 @@ namespace RefactorMe.Test
                 new TypeMetadata { Name = "IamUnknown" });
 
             Assert.IsFalse(entity.ContainsKey("externalId"));
+        }
+
+        [TestMethod]
+        public async Task GivenGenerate_WhenNonObjectStart_ShouldAppendNonObjectCharecter()
+        {
+            var entity = new Dictionary<string, object>();
+
+            await _classUnderTest.GenerateAsync(
+                new List<Dictionary<string, object>> { entity },
+                new TypeMetadata { Name = EntityTypes.Order });
+            string externalId = (string)entity["externalId"];
+
+            var NonObjectCharecter = '-';
+            Assert.AreEqual(NonObjectCharecter, externalId[3]);
         }
     }
 }
