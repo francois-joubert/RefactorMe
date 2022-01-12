@@ -57,5 +57,17 @@ namespace RefactorMe.Test
 
             Assert.IsTrue(result.StartsWith("PRD"));
         }
+
+        [TestMethod]
+        public async Task GivenGenerate_WhenUnknownEntityType_ShouldNotGenerateextErnalId()
+        {
+            var entity = new Dictionary<string, object>();
+
+            await _classUnderTest.GenerateAsync(
+                new List<Dictionary<string, object>> { entity },
+                new TypeMetadata { Name = "IamUnknown" });
+
+            Assert.IsFalse(entity.ContainsKey("externalId"));
+        }
     }
 }
