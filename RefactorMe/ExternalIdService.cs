@@ -43,8 +43,6 @@ namespace Opsi.Cloud.Core
 
             foreach (var entity in entities)
             {
-                var sb = new StringBuilder();
-
                 switch (typeMetadata.Name)
                 {
                     case EntityTypes.Site:
@@ -57,9 +55,17 @@ namespace Opsi.Cloud.Core
                             SetOrderExternalId(entity);
                             break;
                         }
+                    case EntityTypes.Product:
+                        {
+                            SetProductExternalId(entity);
+                            break;
+                        }
                     default:
                         break;
                 }
+
+                var sb = new StringBuilder();
+
 
                 if (TempExclusionHack(typeMetadata))
                 {
@@ -70,15 +76,8 @@ namespace Opsi.Cloud.Core
                             var args = Regex.Split(section, @":|{|}").Where(s => s != string.Empty).ToArray();
                             switch (args[0])
                             {
-                                case "date":
-                                    sb.Append(GetDate(args[1]));
-                                    break;
-
                                 case "increment":
                                     sb.Append(GetIncrement(args[1]));
-                                    break;
-
-                                default:
                                     break;
                             }
                         }
@@ -95,6 +94,24 @@ namespace Opsi.Cloud.Core
             return result;
         }
 
+        
+
+        private static bool TempExclusionHack(TypeMetadata typeMetadata)
+        {
+            return typeMetadata.Name != EntityTypes.Site 
+                && typeMetadata.Name != EntityTypes.Order
+                && typeMetadata.Name != EntityTypes.Product
+                ;
+        }
+
+        #region private
+        private void SetProductExternalId(Dictionary<string, object> entity)
+        {
+            // PRD-{increment:product}"; // PRD-01
+            entity["externalId"] = $"PRD-" +
+                $"{GetIncrement(EntityTypes.Order.ToLower())}";
+        }
+
         private void SetOrderExternalId(Dictionary<string, object> entity)
         {
             // ORD-{date:ddMMyyyy}-{increment:order}"; // ORD-12122022-01
@@ -103,12 +120,6 @@ namespace Opsi.Cloud.Core
                 $"{GetIncrement(EntityTypes.Order.ToLower())}";
         }
 
-        private static bool TempExclusionHack(TypeMetadata typeMetadata)
-        {
-            return typeMetadata.Name != EntityTypes.Site && typeMetadata.Name != EntityTypes.Order;
-        }
-
-        #region private
         private void SetSiteExternalId(Dictionary<string, object> entity)
         {
             // ST-{entity:location.address.postalOrZipCode}-{increment:site} // ST-0042-01
@@ -122,11 +133,6 @@ namespace Opsi.Cloud.Core
             // Example Templates
             switch (name)
             {
-                case EntityTypes.Order:
-                    return @"ORD-{date:ddMMyyyy}-{increment:order}"; // ORD-12122022-01
-
-                case EntityTypes.Product:
-                    return @"PRD-{increment:product}"; // PRD-01
 
                 default:
                     return "";
