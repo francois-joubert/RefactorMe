@@ -2,6 +2,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Opsi.Cloud.Core;
 using Opsi.Cloud.Core.Model;
 using RefactorMe.Types;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -82,6 +83,20 @@ namespace RefactorMe.Test
 
             var NonObjectCharecter = '-';
             Assert.AreEqual(NonObjectCharecter, externalId[3]);
+        }
+
+        [TestMethod]
+        public async Task GivenGenerate_WhenDateNamingPattern_ShouldAppendDate()
+        {
+            var entity = new Dictionary<string, object>();
+
+            await _classUnderTest.GenerateAsync(
+                new List<Dictionary<string, object>> { entity },
+                new TypeMetadata { Name = EntityTypes.Order });
+            string externalId = (string)entity["externalId"];
+
+            var date = DateTime.Now.ToString("ddMMyyyy");
+            Assert.IsTrue(externalId.StartsWith($"ORD-{date}"));
         }
     }
 }
