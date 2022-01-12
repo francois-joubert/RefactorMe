@@ -63,10 +63,6 @@ namespace Opsi.Cloud.Core
                                 sb.Append(GetEntity(args[1], entity));
                                 break;
 
-                            case "reference":
-                                sb.Append(GetReference(args[1], entity));
-                                break;
-
                             default:
                                 break;
                         }
@@ -147,11 +143,6 @@ namespace Opsi.Cloud.Core
             }
 
             return result;
-        }
-
-        private string GetReference(string attribute, object entity)
-        {
-            return entity.GetType().GetProperty(attribute).GetValue(entity, null).ToString();
         }
         #endregion
     }
