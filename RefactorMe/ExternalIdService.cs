@@ -33,7 +33,8 @@ namespace Opsi.Cloud.Core
 
             NamingPattern = GetNamingPattern(typeMetadata.Name);
 
-            if (NamingPattern == string.Empty)
+            if (NamingPattern == string.Empty
+                && TempExclusionHack(typeMetadata))
             {
                 return result;
             }
@@ -51,17 +52,14 @@ namespace Opsi.Cloud.Core
                             // 
                             // 
                             // ST-{entity:location.address.postalOrZipCode}-{increment:site} // ST-0042-01
-                            entity["externalId"] = $"ST-" +
-                                $"{GetEntity("location.address.postalOrZipCode", entity)}-" +
-                                $"{GetIncrement(EntityTypes.Site.ToLower())}";
+                            SetSiteExternalId(entity);
                             break;
                         }
                     default:
                         break;
                 }
 
-                //temp hack to not handle Site
-                if (typeMetadata.Name != EntityTypes.Site)
+                if (TempExclusionHack(typeMetadata))
                 {
                     foreach (var section in split)
                     {
@@ -76,10 +74,6 @@ namespace Opsi.Cloud.Core
 
                                 case "increment":
                                     sb.Append(GetIncrement(args[1]));
-                                    break;
-
-                                case "entity":
-                                    sb.Append(GetEntity(args[1], entity));
                                     break;
 
                                 default:
@@ -99,7 +93,18 @@ namespace Opsi.Cloud.Core
             return result;
         }
 
+        private static bool TempExclusionHack(TypeMetadata typeMetadata)
+        {
+            return typeMetadata.Name != EntityTypes.Site;
+        }
+
         #region private
+        private void SetSiteExternalId(Dictionary<string, object> entity)
+        {
+            entity["externalId"] = $"ST-" +
+                                            $"{GetEntity("location.address.postalOrZipCode", entity)}-" +
+                                            $"{GetIncrement(EntityTypes.Site.ToLower())}";
+        }
         private string GetNamingPattern(string name)
         {
             // Example Templates
@@ -107,9 +112,6 @@ namespace Opsi.Cloud.Core
             {
                 case EntityTypes.Order:
                     return @"ORD-{date:ddMMyyyy}-{increment:order}"; // ORD-12122022-01
-
-                case EntityTypes.Site:
-                    return @"ST-{entity:location.address.postalOrZipCode}-{increment:site}"; // ST-0042-01
 
                 case EntityTypes.Product:
                     return @"PRD-{increment:product}"; // PRD-01
