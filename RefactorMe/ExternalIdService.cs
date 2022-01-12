@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Opsi.Cloud.Core.Model;
+using RefactorMe.Types;
 
 namespace Opsi.Cloud.Core
 {
@@ -87,10 +88,10 @@ namespace Opsi.Cloud.Core
       // Example Templates
       switch (name)
       {
-        case "Order":
+        case EntityTypes.Order:
           return @"ORD-{date:ddMMyyyy}-{increment:order}"; // ORD-12122022-01
 
-        case "Site":
+        case EntityTypes.Site:
           return @"ST-{entity:location.address.postalOrZipCode}-{increment:site}"; // ST-0042-01
 
         case "Product":

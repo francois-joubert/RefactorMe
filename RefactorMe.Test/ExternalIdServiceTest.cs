@@ -1,6 +1,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Opsi.Cloud.Core;
 using Opsi.Cloud.Core.Model;
+using RefactorMe.Types;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -25,22 +26,22 @@ namespace RefactorMe.Test
 
             await _classUnderTest.GenerateAsync(
                 new List<Dictionary<string, object>> { entity },
-                new TypeMetadata { Name = "Site" });
-
+                new TypeMetadata { Name = EntityTypes.Site });
             string result = (string)entity["externalId"];
+
             Assert.IsTrue(result.StartsWith("ST"));
         }
 
         [TestMethod]
-        public async Task GivenGenerate_WhenTypeMetadataIsOrder_ShouldStartWithSiteNamingPattern()
+        public async Task GivenGenerate_WhenTypeMetadataIsOrder_ShouldStartWithOrderNamingPattern()
         {
             var entity = new Dictionary<string, object>();
 
             await _classUnderTest.GenerateAsync(
                 new List<Dictionary<string, object>> { entity },
-                new TypeMetadata { Name = "Order" });
-
+                new TypeMetadata { Name = EntityTypes.Order });
             string result = (string)entity["externalId"];
+
             Assert.IsTrue(result.StartsWith("ORD"));
         }
     }
