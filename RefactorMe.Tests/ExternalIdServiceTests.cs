@@ -119,7 +119,6 @@ namespace RefactorMe.Tests
         public async Task Can_Return_Error_For_Null_Entities()
         {
             // Arrange
-            var entity = new Dictionary<string, object>();
             var typeMetaData = new TypeMetadata { Name = "Site" };
 
             // Act
