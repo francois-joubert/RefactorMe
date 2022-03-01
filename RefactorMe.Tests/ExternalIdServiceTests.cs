@@ -99,5 +99,35 @@ namespace RefactorMe.Tests
             Assert.IsNotNull(result);
             Assert.IsTrue(result.Errors.Contains("Cannot not get TypeMetaData Naming Pattern as Name is blank!"));
         }
+
+        [Test]
+        public async Task Can_Return_Error_For_Null_TypeMetaData()
+        {
+            // Arrange
+            var entity = new Dictionary<string, object>();
+            var entities = new List<Dictionary<string, object>> { entity };
+
+            // Act
+            var result = await _externalIdService.GenerateAsync(entities, null);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Errors.Contains("Cannot not get TypeMetaData Naming Pattern as Name is blank!"));
+        }
+
+        [Test]
+        public async Task Can_Return_Error_For_Null_Entities()
+        {
+            // Arrange
+            var entity = new Dictionary<string, object>();
+            var typeMetaData = new TypeMetadata { Name = "Site" };
+
+            // Act
+            var result = await _externalIdService.GenerateAsync(null, typeMetaData);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Errors.Contains("Entities cannot be null. Please provide entities."));
+        }
     }
 }

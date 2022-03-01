@@ -26,11 +26,17 @@ namespace Opsi.Cloud.Core
         {
             var result = new ServiceActionResult();
 
-            var namingPattern = typeMetadata.Name.GetNamingPattern();
+            var namingPattern = typeMetadata?.Name.GetNamingPattern();
 
             if (string.IsNullOrWhiteSpace(namingPattern))
             {
                 result.Errors.Add("Cannot not get TypeMetaData Naming Pattern as Name is blank!");
+                return result;
+            }
+
+            if (entities == null)
+            {
+                result.Errors.Add("Entities cannot be null. Please provide entities.");
                 return result;
             }
 
