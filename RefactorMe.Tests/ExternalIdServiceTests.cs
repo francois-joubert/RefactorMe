@@ -97,6 +97,7 @@ namespace RefactorMe.Tests
 
             // Assert
             Assert.IsNotNull(result);
+            Assert.IsTrue(!result.Success);
             Assert.IsTrue(result.Errors.Contains("Cannot not get TypeMetaData Naming Pattern as Name is blank!"));
         }
 
@@ -112,6 +113,7 @@ namespace RefactorMe.Tests
 
             // Assert
             Assert.IsNotNull(result);
+            Assert.IsTrue(!result.Success);
             Assert.IsTrue(result.Errors.Contains("Cannot not get TypeMetaData Naming Pattern as Name is blank!"));
         }
 
@@ -126,6 +128,7 @@ namespace RefactorMe.Tests
 
             // Assert
             Assert.IsNotNull(result);
+            Assert.IsTrue(!result.Success);
             Assert.IsTrue(result.Errors.Contains("Entities cannot be null. Please provide entities."));
         }
     }

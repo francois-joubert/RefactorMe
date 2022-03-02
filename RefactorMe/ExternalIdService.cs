@@ -30,13 +30,13 @@ namespace Opsi.Cloud.Core
 
             if (string.IsNullOrWhiteSpace(namingPattern))
             {
-                result.Errors.Add("Cannot not get TypeMetaData Naming Pattern as Name is blank!");
+                result.AddError("Cannot not get TypeMetaData Naming Pattern as Name is blank!");
                 return result;
             }
 
             if (entities == null)
             {
-                result.Errors.Add("Entities cannot be null. Please provide entities.");
+                result.AddError("Entities cannot be null. Please provide entities.");
                 return result;
             }
 
